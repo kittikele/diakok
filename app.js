@@ -1,64 +1,63 @@
 import express from "express";
 
-const PORT = 3000;
+const PORT = 3030;
 const app = express();
 
 app.use(express.json());
 
-const exams = [
-  { id: 1, subject: "literature", level: "intermedia" },
-  { id: 2, subject: "maths", level: "advanced" },
-  { id: 3, subject: "history", level: "intermedia" },
+const diakok = [
+  { id: 1, name: "Ann", subject: "maths" },
+  { id: 2, name: "Bob", subject: "IT" },
+  { id: 3, name: "Cloe", subject: "PE" },
 ];
 
-app.get("/exams", (req, res) => {
-  res.status(200).json(exams);
+app.get("/students", (req, res) => {
+  res.status(200).json(diakok);
 });
 
-app.get("/exams/:id", (req, res) => {
+app.get("/students/:id", (req, res) => {
   const id = +req.params.id;
-  const exam = exams.find((x) => x.id === id);
-  if (!exam) {
-    return res.status(404).json({ message: "Exam not found" });
+  const diak = diakok.find((x) => x.id === id);
+  if (!diak) {
+    return res.status(404).json({ message: "Student not found" });
   }
-  res.status(200).json(exam);
+  res.status(200).json(diak);
 });
 
-app.post("/exams", (req, res) => {
-  const { subject, level } = req.body;
-  if (!subject || !level) {
-    return res.status(400).json({ message: "Subject and level are required" });
+app.post("/students", (req, res) => {
+  const { name, subject } = req.body;
+  if (!name || !subject) {
+    return res.status(400).json({ message: "Name and subject are required" });
   }
-  const id = exams[exams.length - 1]?.id + 1;
-  const exam = { id, subject, level };
-  exams.push(exam);
-  res.status(201).json(exam);
+  const id = diakok[diakok.length - 1]?.id + 1;
+  const diak = { id, name, subject };
+  diakok.push(diak);
+  res.status(201).json(diak);
 });
 
-app.put("/exams/:id", (req, res) => {
+app.put("/students/:id", (req, res) => {
+  const { name, subject } = req.body;
+  if (!name || !subject) {
+    return res.status(400).json({ message: "Name and subject are required" });
+  }
   const id = +req.params.id;
-  const exam = exams.find((x) => x.id === id);
-  if (!exam) {
-    return res.status(404).json({ message: "Exam not found" });
+  const diak = diakok.find((x) => x.id === id);
+  if (!diak) {
+    return res.status(404).json({ message: "Student not found" });
   }
-  const { subject, level } = req.body;
-  if (!subject || !level) {
-    return res.status(400).json({ message: "Subject and level are required" });
-  }
-  exam.subject = subject;
-  exam.level = level;
-  res.status(200).json({ message: "Exam updated" });
+  diak.name = name;
+  diak.subject = subject;
+  res.status(201).json(diak);
 });
 
-app.delete("/exams/:id", (req, res) => {
+app.delete("/students/:id", (req, res) => {
   const id = +req.params.id;
-  const exam = exams.find((x) => x.id === id);
-  if (!exam) {
-    return res.status(404).json({ message: "Exam not found" });
+  const diak = diakok.find((x) => x.id === id);
+  if (!diak) {
+    return res.status(404).json({ message: "Student not found" });
   }
-  const index = exams.indexOf(exam);
-  exams.splice(index, 1);
-  res.status(200).json({ message: "Delete success" });
+  diakok.splice(id-1, 1);
+  res.status(200).json({message: "Delete success"})
 });
 
 app.listen(PORT, () => {
