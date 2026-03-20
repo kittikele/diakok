@@ -1,7 +1,7 @@
 import express from "express";
 
-const PORT = 3030;
 const app = express();
+const PORT = 3030;
 
 app.use(express.json());
 
@@ -10,10 +10,6 @@ const diakok = [
   { id: 2, name: "Bob", subject: "IT" },
   { id: 3, name: "Cloe", subject: "PE" },
 ];
-
-app.get("/students", (req, res) => {
-  res.status(200).json(diakok);
-});
 
 app.get("/students/:id", (req, res) => {
   const id = +req.params.id;
@@ -36,28 +32,19 @@ app.post("/students", (req, res) => {
 });
 
 app.put("/students/:id", (req, res) => {
+  const id = +req.params.id;
+  const diak = diakok.find((x) => x.id === id);
+  if (!diak) {
+    return res.status(404).json({ message: "Student not found" });
+  }
   const { name, subject } = req.body;
   if (!name || !subject) {
     return res.status(400).json({ message: "Name and subject are required" });
   }
-  const id = +req.params.id;
-  const diak = diakok.find((x) => x.id === id);
-  if (!diak) {
-    return res.status(404).json({ message: "Student not found" });
-  }
-  diak.name = name;
-  diak.subject = subject;
-  res.status(201).json(diak);
-});
-
-app.delete("/students/:id", (req, res) => {
-  const id = +req.params.id;
-  const diak = diakok.find((x) => x.id === id);
-  if (!diak) {
-    return res.status(404).json({ message: "Student not found" });
-  }
-  diakok.splice(id-1, 1);
-  res.status(200).json({message: "Delete success"})
+  diakok.name = name;
+  diakok.subject = subject;
+  const ujdiak = diakok.find((x) => x.id === id);
+  res.status(200).json(ujdiak);
 });
 
 app.listen(PORT, () => {
